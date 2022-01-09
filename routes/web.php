@@ -20,7 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/device', ['as' => 'driver', 'uses' => 'App\Http\Controllers\DriverController@box_reqest'])->name('device');
-Route::get('/monitoring', ['as' => 'sireal', 'uses' => 'App\Http\Controllers\MonitoringController@pushTemp'])->name('monitoring');
+Route::get('/device/', ['as' => 'driver', 'uses' => 'App\Http\Controllers\DriverController@box_reqest'])->name('device');
+Route::get('/monitoring/', ['as' => 'sireal', 'uses' => 'App\Http\Controllers\MonitoringController@pushTemp'])->name('monitoring');
 
 

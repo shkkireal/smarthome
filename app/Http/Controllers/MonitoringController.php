@@ -19,21 +19,27 @@ class MonitoringController extends Controller
 
     public function pushTemp()
     {
+
+          if(empty($this->request->get('tempC'))){
+              $floorTemp = '10';
+          }
+          else $floorTemp = $this->request->get('tempC');
          $Temp = Temp::create([
-        'T1' => $this->request->get('t'),
-        'H1' => $this->request->get('h'),
-        'T2' => $this->request->get('t2'),
-        'H2' => $this->request->get('h2'),
-        'T_pola_1' => $this->request->get('tempC'),
+        'T1' => $this->request->get('t2'),
+        'H1' => $this->request->get('h2'),
+        'T2' => $this->request->get('t'),
+        'H2' => $this->request->get('h'),
+        'T_pola_1' => $floorTemp,
         'PPM' => $this->request->get('gasValue'),
     ]);
 
 
 
         if($Temp) {
+            $this->outTemp = new ApiYandexWeather;
+            $this->outTemp->getWeather();
             $this->calculation = new Device;
-            $this->calculation->CalculationNewStage();
-
+            $this->calculation->CalculationNewStage($this->outTemp);
             echo 'create';
         }
 

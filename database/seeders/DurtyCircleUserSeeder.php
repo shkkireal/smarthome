@@ -5,6 +5,7 @@ namespace Database\Seeders;
 
 use App\Models\DurtyCircleUser;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DurtyCircleUserSeeder extends Seeder
 {
@@ -16,8 +17,23 @@ class DurtyCircleUserSeeder extends Seeder
     public function run()
     {
         //
-        DurtyCircleUser::factory()
-            ->count(4)
-            ->create();
+
+        DB::table('durty_circle_users')->insert([
+            'WorkOnCircle' => '5',
+            'room_id' => '1'
+        ]);
+        DB::table('durty_circle_users')->insert([
+            'WorkOnCircle' => '5',
+            'room_id' => '2'
+        ]);
+        DB::table('durty_circle_users')->insert([
+            'WorkOnCircle' => '5',
+            'room_id' => '3'
+        ]);
+        DB::table('durty_circle_users')->insert([
+            'WorkOnCircle' => '5',
+            'room_id' => '4'
+        ]);
+
     }
 }

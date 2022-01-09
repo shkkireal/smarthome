@@ -13,4 +13,11 @@ class DutyCycle extends Model
         return DutyCycle::select('WorkOnCircle')->where('id',$id);
 
     }
+
+    public function updateOrInsert($id){
+
+
+
+
+    }
 }

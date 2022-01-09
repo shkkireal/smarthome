@@ -25,7 +25,12 @@ class ReferenceTempFactory extends Factory
                 'CityInTemp' => $this->faker->randomNumber(2),
                 'CityOutTemp' => $this->faker->randomNumber(2),
                 'FloorInTemp' => 27,
-                'FloorOutTemp' => $this->faker->randomNumber(2)
+                'FloorOutTemp' => $this->faker->randomNumber(2),
+                'termoHead_1' =>5,
+                 'termoHead_2' =>5,
+                 'termoHead_3' =>5,
+                 'termoHead_4' =>5
+
         ];
     }
 }

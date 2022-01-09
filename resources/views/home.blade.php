@@ -5,116 +5,106 @@
     <body>
     @foreach($HomeTemp as $HomeTemps)
     <div class="container">
-        <label for="customRange3" class="form-label"><h1>Температура</h1></label>
+        <label for="customRange3" class="form-label"><h3><b>"Погода" в доме</b></h3></label>
     </div>
     <div class="border container">
         <div class="row">
-            <div class="col">
-                Температура 1 этаж
+            <div class="col text-center">
+                <h3>1 этаж</h3>
             </div>
-            <div class="col">
 
-                <b>{{$HomeTemps->T1}}C</b>
+            <div class="col text-center">
+                <h3>Улица</h3>
+            </div>
 
+            <div class="col text-center">
+                <h3>Прогноз</h3>
             </div>
-            <div class="col">
-                Влажность
-            </div>
-            <div class="col">
-                <b>{{$HomeTemps->H1}}%</b>
-            </div>
+
         </div>
         <div class="row">
-            <div class="col">
-                Температура улица
+            <div class="col text-center">
+                <p>Температура <b>{{$HomeTemps->T1}} C</b>
+                <p>Влажность  <b>{{$HomeTemps->H1}} %</b>
             </div>
-            <div class="col">
-                <b>{{$HomeTemps->T2}}C</b>
 
+            <div class="col text-center">
+                <p> Температура  <b>{{$HomeTemps->T2}} C</b>
+                <p> Влажность <b>{{$HomeTemps->H2}} %</b>
+           </div>
+            <div class="col text-center">
+                <p> Температура  <b>-10 C</b>
+                <p> Влажность <b>20 %</b>
             </div>
-            <div class="col">
-                Влажность
-            </div>
-            <div class="col">
-                <b>{{$HomeTemps->H2}}%</b>
-            </div>
+
         </div>
         <div class="row">
-            <div class="col">
-                Температура прогноз
-            </div>
-            <div class="col">
-                <b>25 C</b>
-
-            </div>
-            <div class="col">
-                Влажность
-            </div>
-            <div class="col">
-                <b>25%</b>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <b>Углекислый газ ppm</b>
-            </div>
-            <div class="col">
-                <b>{{$HomeTemps->PPM}}</b>
-            </div>
-            <div class="col">
-
-            </div>
-            <div class="col">
-
+            @if($HomeTemps->PPM >350)
+            <div class="col bg-danger text-center text-white">
+                <b>Углекислый газ ppm - <b>{{$HomeTemps->PPM}}</b></b>
             </div>
 
+        @elseif($HomeTemps->PPM <=350)
+                    <div class="col bg-success text-center text-white">
+                        <b>Углекислый газ ppm - <b>{{$HomeTemps->PPM}}</b></b>
+                    </div>
+                @endif
         </div>
     </div>
     @foreach($referenceTemp as $referenceTemps)
 
     <div class="container">
-        <label for="customRange3" class="form-label"><h1>Состояние отопления</h1></label>
+        <label for="customRange3" class="form-label"><h3><b>Состояние отопления</b></h3></label>
     </div>
+
+
     <div class="border container">
         <div class="row">
-            <div class="col">
-                Подачи города
+            <div class="col-10">
+                <h5>Целевая температура в доме</h5>
             </div>
             <div class="col">
-                <b>{{$referenceTemps->CityInTemp}}C</b>
 
-            </div>
-            <div class="col">
-              Обратка города
-            </div>
-            <div class="col">
-                <b>{{$referenceTemps->CityOutTemp}}C</b>
-            </div>
-            <div class="col">
-               Целевая в доме
-            </div>
-            <div class="col">
-                <div class="input-group">
+    <div class="input-group">
           <span class="input-group-btn">
               <button type="button" class="btn btn-danger btn-number"  data-type="minus" data-field="quant[2]">
                 <span class="glyphicon glyphicon-minus"></span>
               </button>
           </span>
-                    <input type="text" name="quant[2]" class="form-control input-number" value="{{$referenceTemps->FloorInTemp}}" min="1" max="30">
-                    <span class="input-group-btn">
+        <input type="text" name="quant[2]" class="form-control input-number" value="{{$referenceTemps->FloorInTemp}}" min="1" max="30">
+        <span class="input-group-btn">
               <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="quant[2]">
                   <span class="glyphicon glyphicon-plus"></span>
               </button>
           </span>
-                </div>
+    </div>
+
             </div>
+         </div>
+    </div>
 
 
+    <div class="border container">
+        <div class="row">
             <div class="col">
-               Теплый пола
+                Подача из города
             </div>
             <div class="col">
-                <b>{{$HomeTemps->T_pola_1}}C</b>
+                <b>{{$referenceTemps->CityInTemp}} C</b>
+
+            </div>
+            <div class="col">
+              Обратка в город
+            </div>
+            <div class="col">
+                <b>{{$referenceTemps->CityOutTemp}} C</b>
+            </div>
+
+            <div class="col">
+               Теплый пол
+            </div>
+            <div class="col">
+                <b>{{$HomeTemps->T_pola_1}} C</b>
 
             </div>
         </div>
@@ -165,23 +155,26 @@
         <div class="row">
             @foreach($DutyCircleStatus as $DutyCircleStatuses)
             <div class="col border bg-secondary text-white text-center">
-                <b>{{$DutyCircleStatuses->WorkOnCircle}} минут открыта из 10</b>
+                <b>{{$DutyCircleStatuses->WorkOnCircle}} минут греет из 10</b>
             </div>
             @endforeach
         </div>
             <div class="row">
-            смена цикла в {{$DutyRoundOff}}                текущее время сервера - {{$time}}
+            смена цикла в {{$DutyRoundOff}}
+            </div>
+            <div class="row">
+            текущее время сервера - {{$time}}
             </div>
 
     </div>
     <div class="container">
-        <label for="customRange3" class="form-label"><h1>Настройка системы</h1></label>
+        <label for="customRange3" class="form-label"><h3><b>Настройка системы</b></h3></label>
     </div>
 
         @foreach($durtyCircleUserStatus as $durtyCircleUserStatuses )
 
             <div class="border container">
-            <label for="customRange3" class="form-label"><h3>{{$durtyCircleUserStatuses->room['name']}}</h3></label>
+            <label for="customRange3" class="form-label"><h4>{{$durtyCircleUserStatuses->room['name']}}</h4></label>
 
                  <div class="row gy-5">
 
@@ -197,20 +190,13 @@
             </div>
         @endforeach
 
-
-
-
 @endforeach
-
-
-
 
     </div>
 
-
 @section('custom_js')
     <script>
-
+//Ajax request change user durty heat circles
         $( document ).ready(function() {
           $('.form-range').change(function () {
               var RangeId = $(this).data('namerange')
@@ -227,34 +213,25 @@
                       console.log(data);
                   }
               });
-
-
-
-          })
-
-
+         })
         });
 
-
+//Ajax request change target temp in room
         $('.btn-number').click(function(e){
             e.preventDefault();
-
             fieldName = $(this).attr('data-field');
             type      = $(this).attr('data-type');
             var input = $("input[name='"+fieldName+"']");
             var currentVal = parseInt(input.val());
             if (!isNaN(currentVal)) {
                 if(type == 'minus') {
-
                     if(currentVal > input.attr('min')) {
                         input.val(currentVal - 1).change();
                     }
                     if(parseInt(input.val()) == input.attr('min')) {
                         $(this).attr('disabled', true);
                     }
-
                 } else if(type == 'plus') {
-
                     if(currentVal < input.attr('max')) {
                         input.val(currentVal + 1).change();
                     }
@@ -271,11 +248,9 @@
             $(this).data('oldValue', $(this).val());
         });
         $('.input-number').change(function() {
-
             minValue =  parseInt($(this).attr('min'));
             maxValue =  parseInt($(this).attr('max'));
             valueCurrent = parseInt($(this).val());
-
             name = $(this).attr('name');
             if(valueCurrent >= minValue) {
                 $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
@@ -289,8 +264,6 @@
                 alert('Sorry, the maximum value was reached');
                 $(this).val($(this).data('oldValue'));
             }
-
-
             $.ajax({
                 url:"{{route('home')}}",
                 method: 'GET',
@@ -302,8 +275,6 @@
                     console.log(data);
                 }
             })
-
-
 
         });
         $(".input-number").keydown(function (e) {

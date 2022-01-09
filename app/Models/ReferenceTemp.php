@@ -13,7 +13,18 @@ class ReferenceTemp extends Model
         'CityInTemp',
         'CityOutTemp',
         'FloorInTemp',
-        'FloorOutTemp'
+        'FloorOutTemp',
+        'OutDoorTemp',
+        'termoHead_1',
+        'termoHead_2',
+        'termoHead_3',
+        'termoHead_4'
+
 
     ];
+    public function updateOrInsert(){
+
+
+
+    }
 }

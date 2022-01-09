@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\DurtyCircleUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use function Sodium\increment;
 
 class DurtyCircleUserFactory extends Factory
 {
@@ -24,7 +23,7 @@ class DurtyCircleUserFactory extends Factory
     {
         return [
              'WorkOnCircle' => 5,
-             'room_id' => increment()
+             'room_id' => $this->faker->unique()->randomElement([1,2,3,4]),
         ];
     }
 }

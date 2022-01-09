@@ -16,10 +16,15 @@ class CreateReferenceTempsTable extends Migration
         Schema::create('reference_temps', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->float('CityInTemp');
-            $table->float('CityOutTemp');
-            $table->float('FloorInTemp');
-            $table->float('FloorOutTemp');
+            $table->float('CityInTemp')->nullable();
+            $table->float('CityOutTemp')->nullable();
+            $table->float('FloorInTemp')->nullable();
+            $table->float('FloorOutTemp')->nullable();
+            $table->float('OutDoorTemp')->nullable();
+            $table->tinyInteger('termoHead_1');
+            $table->tinyInteger('termoHead_2');
+            $table->tinyInteger('termoHead_3');
+            $table->tinyInteger('termoHead_4');
 
         });
     }

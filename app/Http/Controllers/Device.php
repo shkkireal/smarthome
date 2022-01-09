@@ -45,154 +45,112 @@ class Device
 
         }
 
-        return '{1%1' . $responceString . '}';
+        return '{1%0' . $responceString . '}';
     }
 
-    public function calculationNewStage()
+
+    /**
+     * @param $outweather
+     * crone device
+     */
+    public function calculationNewStage($weatherNow)
     {
-        $lastRoomTemps = Temp::select('T1')
+        $outDoorTempNow = $weatherNow->weather->temp;
+
+        //определяем время следующего такта
+        $lastRoomTemps = Temp::select()
             ->orderBy('id', 'DESC')
-            ->take(10)
-            ->get();
-        foreach ($lastRoomTemps as $lastRoomTemp) {
-            $lastRoomTempAr[] = $lastRoomTemp->T1;
-        }
+            ->first();
 
         $dutyCircleOn = DutyCycle::select('updated_at')->take(1)->get();
         $dutyCircleOff = $dutyCircleOn[0]->updated_at->addMinute(10);
-        $lastRoundDutyCircle = $dutyCircleOn[0]->updated_at->subMinute(10);
-        $RealRoomTempTrend = self::getRealRoomTempTrend($lastRoundDutyCircle, $dutyCircleOn);
-        $UserRoomTempTrend = self::getUserRoomTempTrend();
-        $SystemRoomTempTrend = self::getSystemRoomTempTrend();
-       // dd($dutyCircleOn, $dutyCircleOff, Carbon::now(), $RealRoomTempTrend, $UserRoomTempTrend, $SystemRoomTempTrend->RoomNeedHeating);
-        $systemRoomNeedHeat = self::setSystemRoomNeedHeating($RealRoomTempTrend,$UserRoomTempTrend);
-        $setTermoHeadsStatuses = self::setTermoHeadsStatuses($dutyCircleOff);
+
+
+        //исправляем режим по ощущениям пользователя
+
+        self::updateReferenseTempFromUserTemp($outDoorTempNow, $lastRoomTemps->T2);
+
+        //выставляем текущий такт термоголовок
+        self::setTermoHeadsStatuses($dutyCircleOff);
+
+        //если пришло время смены такта
        if ($dutyCircleOff < Carbon::now()) {
-            $dutyCircleNextRound = self::getDutyCircleNextRound($RealRoomTempTrend, $UserRoomTempTrend, $SystemRoomTempTrend->RoomNeedHeating);
+           self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);
 
+           //смотрим в температурную таблицу и задаем следующий такт
+           self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);
         }
+
+
     }
 
-    public function setSystemRoomNeedHeating($RealRoomTempTrend,$UserRoomTempTrend){
+    public function updateReferenseTempFromUserTemp($outDoorTempNow, $floorInTemp){
 
-        $lastRoomTemps = Temp::select('T1')->orderBy('id', 'DESC')->take(1)->get();
-        $targetRoomTemp = ReferenceTemp::select('FloorInTemp')->orderBy('id', 'DESC')->take(1)->get();;
-        $lastRoomTemp = $lastRoomTemps[0]->T1-1;
-        if($lastRoomTemp > $targetRoomTemp[0]->FloorInTemp) $setSystemRoomNeedHeat = SystemHeatingJob::create(['SystemNowHeating' => '1', 'RoomNeedHeating' =>'1']);
-        if($lastRoomTemp <= $targetRoomTemp[0]->FloorInTemp) $setSystemRoomNeedHeat = SystemHeatingJob::create(['SystemNowHeating' => '1', 'RoomNeedHeating' =>'0']);
-    }
+        $hasOutDoorTemp = ReferenceTemp::select('OutDoorTemp')
+            ->where(['OutDoorTemp' => $outDoorTempNow])
+            ->where(['FloorInTemp' => $floorInTemp])
+            ->orderBy('id', 'DESC')
+            ->first();
 
-    public function getRealRoomTempTrend($lastRoundDutyCircle, $dutyCircleOn)
-    {
-        $lastDutyRoundRoomTempAr[] = '';
-        $lastDutyRoundRoomTemps = Temp::select('T1')->whereBetween('updated_at', [$lastRoundDutyCircle, $dutyCircleOn[0]->updated_at])->orderBy('id')->get();
-       if(count($lastDutyRoundRoomTemps) > 1) {
-           foreach ($lastDutyRoundRoomTemps as $lastDutyRoundRoomTemp) {
-               $lastDutyRoundRoomTempAr1[] = $lastDutyRoundRoomTemp->T1;
-           }
-           $sizeMassPart = round(count($lastDutyRoundRoomTempAr1) / 2);
-           $lastDutyRoundRoomTempAr = array_chunk($lastDutyRoundRoomTempAr1, $sizeMassPart);
-           $lastDutyRoundRoomTempsPart1 = array_sum($lastDutyRoundRoomTempAr[0]);
-           $lastDutyRoundRoomTempsPart2 = array_sum($lastDutyRoundRoomTempAr[1]);
-
-           if ($lastDutyRoundRoomTempsPart1 > $lastDutyRoundRoomTempsPart2) $RealRoomTempUp = false;
-           elseif ($lastDutyRoundRoomTempsPart1 < $lastDutyRoundRoomTempsPart2) $RealRoomTempUp = true;
-           else {
-               $deltaTDutyRoundRoomTempsParts = $lastDutyRoundRoomTempsPart1 - $lastDutyRoundRoomTempsPart2;
-               if ($deltaTDutyRoundRoomTempsParts < $sizeMassPart) $RealRoomTempUp = null;
-
-           }
-
-           return $RealRoomTempUp;
-       }
-       else return null;
-    }
-
-    public function getUserRoomTempTrend()
-    {
         $UserRoomTemps = DurtyCircleUser::select('WorkOnCircle')
             ->orderBy('id')
             ->take(4)
             ->get();
         foreach ($UserRoomTemps as $UserRoomTemp) {
             $UserRoomTempAr[] = $UserRoomTemp->WorkOnCircle;
+
         }
-        $UserRoomTempSum = array_sum($UserRoomTempAr);
-        $SystemRoomRounds = DutyCycle::select('WorkOnCircle')
-            ->orderBy('id')
-            ->take(4)
-            ->get();
-        foreach ($SystemRoomRounds as $SystemRoomRound) {
-            $SystemRoomRoundAr[] = $SystemRoomRound->WorkOnCircle;
-        }
-        $SystemRoomRoundSum = array_sum($SystemRoomRoundAr);
-        $deltaRoomRoundTemp = $UserRoomTempSum - $SystemRoomRoundSum;
-        if ($deltaRoomRoundTemp > 1) $UserRoomTempUp = true;
-        elseif ($deltaRoomRoundTemp < -1) $UserRoomTempUp = false;
-        else $UserRoomTempUp = null;
 
-        return $UserRoomTempUp;
-    }
+        if(empty($hasOutDoorTemp)) ReferenceTemp::insert(['termoHead_1' => $UserRoomTempAr[0], 'termoHead_2' => $UserRoomTempAr[1], 'termoHead_3' => $UserRoomTempAr[2], 'termoHead_4' => $UserRoomTempAr[3], 'OutDoorTemp' => $outDoorTempNow, 'FloorInTemp' => $floorInTemp]);
 
-    public function getSystemRoomTempTrend()
-    {
-
-        $SystemRoomTempTrend = SystemHeatingJob::select('RoomNeedHeating')->get()->last();
-
-        return $SystemRoomTempTrend;
+        else ReferenceTemp::where('OutDoorTemp', $outDoorTempNow)->where('FloorInTemp', $floorInTemp)->update(['termoHead_1' => $UserRoomTempAr[0], 'termoHead_2' => $UserRoomTempAr[1], 'termoHead_3' => $UserRoomTempAr[2], 'termoHead_4' => $UserRoomTempAr[3]]);
 
     }
 
-    public function getDutyCircleNextRound($RealRoomTempTrend, $UserRoomTempTrend, $SystemRoomTempTrend)
+
+    public function getDutyCircleNextRound($outweather, $floorInTemp)
     {
-/*???
-        $NowDutyCycles = DutyCycle::get()->all();
-        foreach ($NowDutyCycles as $NowDutyCycle) {
-            $statusJob = $NowDutyCycle->WorkOnCircle + 1;
-            DutyCycle::where('id', $NowDutyCycle->id)->update(['WorkOnCircle' => $statusJob]);
+        $nextStage = ReferenceTemp::select('termoHead_1', 'termoHead_2', 'termoHead_3', 'termoHead_4')
+            ->where('OutDoorTemp', $outweather)
+            ->where('FloorInTemp', $floorInTemp)
+            ->toBase()
+            ->first();
+
+        if(empty($nextStage)) {
+            $nextStage['termoHead_1'] = 5 ;
+            $nextStage['termoHead_2'] = 5 ;
+            $nextStage['termoHead_3'] = 5 ;
+            $nextStage['termoHead_4'] = 5 ;
+
         }
-*/
 
-        //нужно греть
-        if ($RealRoomTempTrend === false) {
-            //пользователь говорит нужно греть
-            if ($UserRoomTempTrend) {
-                //система пытается греть?
-                if ($SystemRoomTempTrend = 1) {
-                    $lastSystemHeatingJob = SystemHeatingJob::select('RoomNeedHeating')->get()->take(-1);
-                    //пытается греть - добавляем
-                    if ($lastSystemHeatingJob->RoomNeedHeating = 1) {
-                        self::setDutyCircle(3, true);
+        $i = 1;
 
-                    }
+        foreach ($nextStage as $value){
 
-                }
-                self::setDutyCircle(2, true);
+            self::setDutyCircle($i, $value);
+            $i++;
 
-            }
-
-            self::setDutyCircle(1, false);
-
-        } else self::setDutyCircle(10, false);
+        }
 
         return true;
     }
 
-
-    public function setDutyCircle($ratio, $trend = null)
+    public function setReferenceTemp($termoHead_1, $termoHead_2, $termoHead_3, $termoHead_4, $outweather)
     {
-        $NowDutyCycles = DutyCycle::get()->all();
-        foreach ($NowDutyCycles as $NowDutyCycle) {
+        $outDoorTempNow = $outweather->weather->temp;
+       $hasReferenceTemp = ReferenceTemp::select('termoHead_1', 'termoHead_2', 'termoHead_3', 'termoHead_4')->where("OutDoorTemp", $outDoorTempNow)->get(1);
 
-            if ($trend)  $statusJob = $NowDutyCycle->WorkOnCircle + $ratio;
-            else  $statusJob = $NowDutyCycle->WorkOnCircle - $ratio;
+        if($hasReferenceTemp)  ReferenceTemp::where("OutDoorTemp", $outDoorTempNow)->update(['termoHead_1' => $termoHead_1, 'termoHead_2' => $termoHead_2, 'termoHead_3' => $termoHead_3, 'termoHead_4' => $termoHead_4]);
+        else ReferenceTemp::insert(['termoHead_1' => $termoHead_1, 'termoHead_2' => $termoHead_2, 'termoHead_3' => $termoHead_3, 'termoHead_4' => $termoHead_4, 'OutDoorTemp' => $outDoorTempNow]);
+        return true;
+    }
 
-            if ($statusJob > 10) $statusJob = 10;
-            if ($statusJob < 0) $statusJob = 0;
 
-            DutyCycle::where('id', $NowDutyCycle->id)->update(['WorkOnCircle' => $statusJob]);
+    public function setDutyCircle($id, $WorkOnCircle )
+    {
 
-        }
+        DutyCycle::where('id', $id)->update(['WorkOnCircle' => $WorkOnCircle]);
         return true;
     }
 
@@ -201,6 +159,7 @@ class Device
 
 
         $NowDutyCycles = DutyCycle::get()->all();
+
         foreach ($NowDutyCycles as $NowDutyCycle) {
 
              $timeIsOf = $NowDutyCycle->updated_at->addMinute($NowDutyCycle->WorkOnCircle);
