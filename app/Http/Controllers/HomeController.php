@@ -59,6 +59,7 @@ class HomeController extends Controller
             $DutyCircleStatus = DutyCycle::Select('*')->OrderBy('id', 'DESC')->take('4')->get();
             $referenceTemp = ReferenceTemp::Select('*')->OrderBy('id', 'DESC')->take('1')->get();
             $durtyCircleUserStatus = DurtyCircleUser::Select('*')->OrderBy('id', 'DESC')->take('4')->get();
+            $outDoorTemp = ReferenceTemp:: Select('OutDoorTemp')->OrderBy('updated_at', 'DESC')->take('1')->toBase()->get()[0];
 
             return view('home', [
 
@@ -68,7 +69,8 @@ class HomeController extends Controller
                 'DutyRoundOff' => $DutyCircleStatus[0]->updated_at->addMinute(10),
                 'time' => Carbon::now(),
                 'referenceTemp' => $referenceTemp,
-                'durtyCircleUserStatus' => $durtyCircleUserStatus
+                'durtyCircleUserStatus' => $durtyCircleUserStatus,
+                'outDoorTemp' => $outDoorTemp
 
 
 

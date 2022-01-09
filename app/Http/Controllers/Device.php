@@ -74,15 +74,10 @@ class Device
         self::setTermoHeadsStatuses($dutyCircleOff);
 
         //если пришло время смены такта
-       if ($dutyCircleOff < Carbon::now()) {
-           self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);
 
-           //смотрим в температурную таблицу и задаем следующий такт
-           self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);
-        }
+       if ($dutyCircleOff < Carbon::now() or !$dutyCircleOff->isCurrentDay())  { echo "ok"; self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);}
 
-
-    }
+           }
 
     public function updateReferenseTempFromUserTemp($outDoorTempNow, $floorInTemp){
 

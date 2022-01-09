@@ -14,11 +14,11 @@
             </div>
 
             <div class="col text-center">
-                <h3>Улица</h3>
+                <h3>Входящая</h3>
             </div>
 
             <div class="col text-center">
-                <h3>Прогноз</h3>
+                <h3>Улица</h3>
             </div>
 
         </div>
@@ -33,7 +33,7 @@
                 <p> Влажность <b>{{$HomeTemps->H2}} %</b>
            </div>
             <div class="col text-center">
-                <p> Температура  <b>-10 C</b>
+                <p> Температура  <b>{{$outDoorTemp->OutDoorTemp}} C</b>
                 <p> Влажность <b>20 %</b>
             </div>
 
