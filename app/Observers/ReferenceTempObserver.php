@@ -29,6 +29,7 @@ class ReferenceTempObserver
     public function updated(ReferenceTemp $referenceTemp)
     {
         //
+
         Log::info('ReferenceTemp updated from monitoring .', ['OutDoorTemp' => $referenceTemp->OutDoorTemp, 'termoHead_1'=>$referenceTemp->termoHead_1, 'termoHead_2'=>$referenceTemp->termoHead_2, 'termoHead_3'=>$referenceTemp->termoHead_3, 'termoHead_4' => $referenceTemp->termoHead_4, 'T_pola_1' => $referenceTemp->T_pola_1, 'FloorInTemp' => $referenceTemp->PPM]);
     }
 

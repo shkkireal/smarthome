@@ -144,8 +144,8 @@ class Device
 
     public function setDutyCircle($id, $WorkOnCircle )
     {
-
-        DutyCycle::where('id', $id)->update(['WorkOnCircle' => $WorkOnCircle]);
+        DutyCycle::find($id)->update(['WorkOnCircle' => 0]);
+        DutyCycle::find($id)->update(['WorkOnCircle' => $WorkOnCircle]);
         return true;
     }
 
@@ -158,11 +158,11 @@ class Device
         foreach ($NowDutyCycles as $NowDutyCycle) {
 
              $timeIsOf = $NowDutyCycle->updated_at->addMinute($NowDutyCycle->WorkOnCircle);
-             if($timeIsOf > Carbon::now()){
+             if($timeIsOf->greaterThanOrEqualTo(Carbon::now())){
 
-             TermoHead::where('id', $NowDutyCycle->id)->update(['Status' => 1]);
+             TermoHead::find($NowDutyCycle->id)->update(['Status' => 1]);
              }
-            else TermoHead::where('id', $NowDutyCycle->id)->update(['Status' => 0]);
+            else TermoHead::find($NowDutyCycle->id)->update(['Status' => 0]);
 
         }
 

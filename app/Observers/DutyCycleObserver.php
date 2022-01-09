@@ -31,6 +31,7 @@ class DutyCycleObserver
     public function updated(DutyCycle $dutyCycle)
     {
         //
+
         Log::info('DutyCycle updated from monitoring .', ['WorkOnCircle' =>  $dutyCycle->WorkOnCircle, 'created_at'=>$dutyCycle->created_at, 'updated_at'=>$dutyCycle->updated_at]);
     }
 

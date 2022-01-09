@@ -9,6 +9,13 @@ class DutyCycle extends Model
 {
     use HasFactory;
 
+
+
+    protected $fillable = [
+        'updated_at',
+        'WorkOnCircle'
+
+    ];
     public function getCircle($id){
         return DutyCycle::select('WorkOnCircle')->where('id',$id);
 

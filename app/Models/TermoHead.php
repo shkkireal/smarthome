@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TermoHead extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'Status',
+        'updated_at',
+        'HeadNomber'
+
+    ];
 }

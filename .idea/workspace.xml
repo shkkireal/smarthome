@@ -235,11 +235,11 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\webdev\smarthome\app\Http\Controllers" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\webdev\smarthome" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\webdev\smarthome\app\Http\Controllers" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -272,12 +272,12 @@
             <path>
               <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
               <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@25249a02" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@f1bd72b" type="9fbbdea:ServiceModel$ServiceNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@3c95ba6d" type="9fbbdea:ServiceModel$ServiceNode" />
             </path>
             <path>
               <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
               <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@25249a02" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@f7dd3d1" type="9fbbdea:ServiceModel$ServiceNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@36339a2d" type="9fbbdea:ServiceModel$ServiceNode" />
             </path>
           </expand>
           <select />
@@ -311,7 +311,7 @@
       <workItem from="1640546728712" duration="820000" />
       <workItem from="1640760982198" duration="8266000" />
       <workItem from="1640844996666" duration="7498000" />
-      <workItem from="1641724271078" duration="14930000" />
+      <workItem from="1641724271078" duration="25214000" />
     </task>
     <servers />
   </component>
