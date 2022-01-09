@@ -75,8 +75,8 @@ class Device
 
         //если пришло время смены такта
 
-       if ($dutyCircleOff < Carbon::now() or !$dutyCircleOff->isCurrentDay())  self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);
-       if (!$dutyCircleOff->isCurrentDay()) self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);
+       if ($dutyCircleOff->lessThanOrEqualTo(Carbon::now())) self::getDutyCircleNextRound($outDoorTempNow, $lastRoomTemps->T2);
+
            }
 
     public function updateReferenseTempFromUserTemp($outDoorTempNow, $floorInTemp){
